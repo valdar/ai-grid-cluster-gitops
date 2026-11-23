@@ -48,10 +48,18 @@ spec:
                   name: multicluster-observability-addon
                 spec:
                   installStrategy:
+                    # This policy can create the add-on before ACM; the Manual
+                    # default would prevent automatic installation on selected clusters.
+                    type: Placements
                     placements:
                       - name: global
                         namespace: open-cluster-management-global-set
                         configs:
+                          # Required for manifest generation when ACM's default reference is absent.
+                          - group: addon.open-cluster-management.io
+                            resource: addondeploymentconfigs
+                            namespace: open-cluster-management-observability
+                            name: multicluster-observability-addon
                           - group: monitoring.rhobs
                             resource: scrapeconfigs
                             namespace: open-cluster-management-observability
